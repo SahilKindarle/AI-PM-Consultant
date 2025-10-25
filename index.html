@@ -179,6 +179,13 @@
         <svg class="roi-svg" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="18" rx="4" fill="#eff6ff"/><path d="M16 14v4M14 16h4" stroke="#4F8CFF" stroke-width="2" stroke-linecap="round"/><rect x="8" y="12" width="16" height="8" rx="2" fill="#E4EDFB"/></svg>
         ROI Calculator
       </button>
+      <!-- <button id="resource-chip" class="chip">
+        <svg class="roi-svg" viewBox="0 0 32 32" fill="none">
+          <ellipse cx="16" cy="16" rx="14" ry="8" fill="#eff6ff"/>
+          <rect x="8" y="12" width="16" height="8" rx="2" fill="#E4EDFB"/>
+        </svg>
+        Resource Allocator
+      </button> -->
     </div>
 
     <!-- ROI Modal/Popup -->
@@ -192,6 +199,19 @@
       <button onclick="document.getElementById('roi-modal').style.display='none'">Close</button>
       <div id="roi-output"></div>
     </div>
+
+    <div id="resource-modal" style="display:none;position:fixed;top:20%;left:50%;transform:translateX(-50%);background:white;padding:2em;border:1px solid #ccc;border-radius:10px;z-index:1000;box-shadow:0 4px 24px rgba(0,0,0,0.10);min-width:320px;overflow-y:auto; max-height:60vh;">
+        <h3>Resource Allocator</h3>
+        <label>Team Members & Capacity (e.g. "Sara:40, Alex:35, John:30"):</label>
+        <input type="text" id="resource-members" placeholder="Member:hours, ...">
+        <label>Tasks & Estimates (e.g. "Design:10, Testing:8, Docs:12"):</label>
+        <input type="text" id="resource-tasks" placeholder="Task:hours, ...">
+        <label>Task priorities/due (optional):</label>
+        <input type="text" id="resource-priorities" placeholder="Task:priority, ...">
+        <button id="resource-calc-btn">Optimize Allocation</button>
+        <button onclick="document.getElementById('resource-modal').style.display='none'">Close</button>
+        <div id="resource-output" style="margin-top:1em;font-weight:500;color:#264074"></div>
+      </div>
   </main>
   <script>
     document.getElementById('consult-form').onsubmit = async (e) => {
@@ -206,10 +226,45 @@
       const { result } = await res.json();
       document.getElementById('output').innerHTML = result.replace(/\r?\n/g, '<br>');
     };
+    // showROI Modal
     document.getElementById('roi-chip').onclick = () => {
       document.getElementById('roi-modal').style.display = 'block';
       document.getElementById('roi-output').textContent = '';
     };
+
+    // Show RES Modal
+    document.getElementById('resource-chip').onclick = () => {
+  document.getElementById('resource-modal').style.display = 'block';
+  document.getElementById('resource-output').textContent = '';
+};
+
+// RES Loghic 
+document.getElementById('resource-calc-btn').onclick = async () => {
+  const members = document.getElementById('resource-members').value;
+  const tasks = document.getElementById('resource-tasks').value;
+  const priorities = document.getElementById('resource-priorities').value;
+
+  if (!members || !tasks) {
+    document.getElementById('resource-output').textContent = 'Please enter team and tasks.';
+    return;
+  }
+
+  document.getElementById('resource-output').textContent = 'Optimizing...';
+  const prompt = 
+    `Team members and their weekly capacity: ${members}. ` +
+    `Project tasks and estimated effort: ${tasks}. ` +
+    (priorities ? `Task priorities/due dates: ${priorities}. ` : "") +
+    `Please assign tasks optimally to avoid overallocation. Flag overloaded members and recommend redistributions. Suggest next clarifying questions if needed.`;
+
+  const res = await fetch('/resource-allocate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: prompt })
+  });
+  const { result } = await res.json();
+  document.getElementById('resource-output').innerHTML = result.replace(/\r?\n/g, '<br>');
+};
+
     document.getElementById('roi-calc-btn').onclick = async () => {
       const invest = +document.getElementById('roi-invest').value;
       const profit = +document.getElementById('roi-profit').value;

@@ -26,6 +26,14 @@ app.post('/roi-suggestion', async (req, res) => {
   res.json({ result: agentResponse });
 });
 
+app.post('/resource-allocate', async (req, res) => {
+  const { question } = req.body;
+  // Your LLM/Ollama/AI call here, e.g.:
+  const analysis = await analyzeWithOllama(question, "");
+  res.json({ result: analysis });
+});
+
+
 async function searchWeb(query) {
     const url = `https://api.scraperapi.com/structured/google/search/v1?api_key=${process.env.PERPLEXITY_API_KEY}&query=${query}`;
     // https://api.scraperapi.com/?api_key=
