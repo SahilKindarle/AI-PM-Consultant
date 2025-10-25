@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Business Consultant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --main-bg: #fafbfe;
+      --primary: #4f8cff;
+      --accent: #f2f6ff;
+      --chip-bg: #e4edfb;
+      --chip-hover: #d2e3fc;
+      --modal-bg: #fff;
+      --modal-shadow: 0 4px 24px rgba(36, 79, 227, 0.10);
+      --border-radius: 14px;
+      --font: 'Inter', Arial, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--main-bg);
+      margin: 0;
+      height: 120vh;
+      width: 100vw;
+      padding: 0;
+    }
+    main {
+      max-width: 90vw;
+      margin: 0 auto;
+      margin-top: 2vh;
+      background: var(--accent);
+      padding: 2.6em 2em 3em;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 12px rgba(120, 160, 250, 0.10);
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 0.5em;
+      letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      justify-content: center;
+    }
+    .header-svg {
+      width: 32px;
+      vertical-align: middle;
+    }
+    label {
+      font-weight: 600;
+      color: #222b;
+      margin-bottom: 0.6em;
+      margin-top: 1em;
+      display: block;
+      letter-spacing: 0.03em;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      font-size: 1em;
+      padding: 0.7em;
+      border: 1.5px solid #e6ecfa;
+      border-radius: var(--border-radius);
+      background: #fff;
+      margin-bottom: 0.7em;
+      transition: box-shadow 0.15s;
+      box-shadow: 0 2px 6px rgba(120, 160, 250, 0.05);
+    }
+    textarea:focus, input:focus {
+      outline: none;
+      box-shadow: 0 2px 12px rgba(79, 140, 255, 0.08);
+      border-color: var(--primary);
+    }
+    button, .chip {
+      font-size: 1em;
+      font-family: var(--font);
+      background: var(--chip-bg);
+      color: #425570;
+      border: none;
+      padding: 0.7em 2em;
+      border-radius: 32px;
+      cursor: pointer;
+      box-shadow: 0 1px 8px rgba(120, 160, 250, 0.08);
+      transition: background 0.25s, box-shadow 0.25s;
+      margin-bottom: 0.3em;
+      margin-right: 0.6em;
+      margin-top: 0.2em;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    button:hover, .chip:hover {
+      background: var(--chip-hover);
+      box-shadow: 0 4px 24px rgba(120, 160, 250, 0.15);
+    }
+    .result {
+      margin-top: 2em;
+      background: #fff;
+      padding: 1.1em;
+      border-radius: var(--border-radius);
+      color: #222b;
+      font-size: 1em;
+      min-height: 2em;
+      box-shadow: 0 2px 12px rgba(120, 160, 250, 0.07);
+      word-break: break-word;
+    }
+    #roi-output {
+      margin-top: 1em;
+      height: fit-content;
+      font-weight: 500;
+      color: #264074;
+      font-size: 1em;
+    }
+    #roi-modal {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--modal-bg);
+      padding: 2.2em 2em 1.1em;
+      border-radius: var(--border-radius);
+      z-index: 1000;
+      box-shadow: var(--modal-shadow);
+      min-width: 320px;
+      min-height: 160px;
+      color: #264074;
+    }
+    #roi-modal h3 {
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 1.1em;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    #roi-modal button {
+      margin-right: 1em;
+      margin-top: 1em;
+      margin-bottom: 0;
+      font-size: 1em;
+      background: var(--chip-bg);
+      color: #264074;
+      border: none;
+      border-radius: 18px;
+      padding: 0.4em 1.5em;
+    }
+    #roi-modal button:hover {
+      background: var(--chip-hover);
+    }
+    .roi-svg {
+      width: 24px;
+      vertical-align: middle;
+      margin-right: 0.2em;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>
+      <svg class="header-svg" viewBox="0 0 24 24" fill="none"><path d="M3 15s3-6 9-6 9 6 9 6" stroke="#4F8CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="15" r="3" stroke="#4F8CFF" stroke-width="2" fill="#e6f0ff"/></svg>
+      AI Consultant
+    </h1>
+    <form id="consult-form">
+      <label for="question">Your business question:</label>
+      <textarea id="question" rows="3" placeholder="Type your business challenge here..."></textarea><br>
+      <button type="submit">Get Analysis</button>
+    </form>
+    <div id="output" class="result"></div>
+
+    <div style="margin-top:2em;">
+      <button id="roi-chip" class="chip">
+        <svg class="roi-svg" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="18" rx="4" fill="#eff6ff"/><path d="M16 14v4M14 16h4" stroke="#4F8CFF" stroke-width="2" stroke-linecap="round"/><rect x="8" y="12" width="16" height="8" rx="2" fill="#E4EDFB"/></svg>
+        ROI Calculator
+      </button>
+    </div>
+
+    <!-- ROI Modal/Popup -->
+    <div id="roi-modal" style="overflow-y:auto; max-height:60vh;">
+      <h3>ROI Calculator</h3>
+      <label>Initial Investment:</label>
+      <input type="number" id="roi-invest" min="0">
+      <label>Net Profit:</label>
+      <input type="number" id="roi-profit" min="0">
+      <button id="roi-calc-btn">Calculate</button>
+      <button onclick="document.getElementById('roi-modal').style.display='none'">Close</button>
+      <div id="roi-output"></div>
+    </div>
+  </main>
+  <script>
+    document.getElementById('consult-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const question = document.getElementById('question').value;
+      document.getElementById('output').textContent = 'Working...';
+      const res = await fetch('/consult', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const { result } = await res.json();
+      document.getElementById('output').innerHTML = result.replace(/\r?\n/g, '<br>');
+    };
+    document.getElementById('roi-chip').onclick = () => {
+      document.getElementById('roi-modal').style.display = 'block';
+      document.getElementById('roi-output').textContent = '';
+    };
+    document.getElementById('roi-calc-btn').onclick = async () => {
+      const invest = +document.getElementById('roi-invest').value;
+      const profit = +document.getElementById('roi-profit').value;
+      if (isNaN(invest) || isNaN(profit) || invest <= 0) {
+        document.getElementById('roi-output').textContent = 'Enter valid investment and profit amounts!';
+        return;
+      }
+      const roi = ((profit - invest) / invest) * 100;
+      document.getElementById('roi-output').textContent = `Calculated ROI: ${roi.toFixed(2)}%, Loading AI Suggestion.......`;
+      
+      const res = await fetch('/roi-suggestion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: `My initial investment is ₹${invest} and net profit is ₹${profit}. The ROI is ${roi.toFixed(2)}%. What does this mean for my business and how can I improve it? Please ask me any further relevant questions for better guidance.`
+        })
+      });
+      const { result } = await res.json();
+      document.getElementById('roi-output').innerHTML += '<br><br>' + result.replace(/\r?\n/g, '<br>');
+    };
+  </script>
+</body>
+</html>
